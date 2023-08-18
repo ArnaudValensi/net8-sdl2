@@ -6,52 +6,40 @@ namespace SdlTest
 {
     class Program
     {
-        //Screen dimension constants
-        private const int SCREEN_WIDTH = 640;
-
-        private const int SCREEN_HEIGHT = 480;
+        const int SCREEN_WIDTH = 640;
+        const int SCREEN_HEIGHT = 480;
 
         static int Main(string[] args)
         {
-            //The window we'll be rendering to
             var window = IntPtr.Zero;
 
-            //Initialize SDL
             if (SDL.SDL_Init(SDL.SDL_INIT_VIDEO) < 0)
             {
-                Console.WriteLine("SDL could not initialize! SDL_Error: {0}", SDL.SDL_GetError());
+                throw new Exception($"SDL could not initialize! SDL_Error: {SDL.SDL_GetError()}");
             }
-            else
+
+            window = SDL.SDL_CreateWindow(
+                "SDL Tutorial",
+                SDL.SDL_WINDOWPOS_UNDEFINED,
+                SDL.SDL_WINDOWPOS_UNDEFINED,
+                SCREEN_WIDTH,
+                SCREEN_HEIGHT,
+                SDL.SDL_WindowFlags.SDL_WINDOW_SHOWN
+            );
+            if (window == IntPtr.Zero)
             {
-                //Create window
-                window = SDL.SDL_CreateWindow("SDL Tutorial", SDL.SDL_WINDOWPOS_UNDEFINED, SDL.SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL.SDL_WindowFlags.SDL_WINDOW_SHOWN);
-                if (window == IntPtr.Zero)
-                {
-                    Console.WriteLine("Window could not be created! SDL_Error: {0}", SDL.SDL_GetError());
-                }
-                else
-                {
-                    //Get window surface
-                    var myscreenSurface = SDL.SDL_GetWindowSurface(window);
-
-                    //The surface contained by the window
-                    var screenSurface = Marshal.PtrToStructure<SDL.SDL_Surface>(myscreenSurface);
-
-                    //Fill the surface white
-                    SDL.SDL_FillRect(myscreenSurface, IntPtr.Zero, SDL.SDL_MapRGB(screenSurface.format, 0x00, 0x00, 0xFF));
-
-                    //Update the surface
-                    SDL.SDL_UpdateWindowSurface(window);
-
-                    //Wait two seconds
-                    SDL.SDL_Delay(5000);
-                }
+                throw new Exception("Window could not be created! SDL_Error: {SDL.SDL_GetError()}");
             }
 
-            //Destroy window
-            SDL.SDL_DestroyWindow(window);
+            var windowSurface = SDL.SDL_GetWindowSurface(window);
+            var screenSurface = Marshal.PtrToStructure<SDL.SDL_Surface>(windowSurface);
+            SDL.SDL_FillRect(windowSurface, IntPtr.Zero, SDL.SDL_MapRGB(screenSurface.format, 0x00, 0x00, 0xFF));
 
-            //Quit SDL subsystems
+            SDL.SDL_UpdateWindowSurface(window);
+
+            SDL.SDL_Delay(5000);
+
+            SDL.SDL_DestroyWindow(window);
             SDL.SDL_Quit();
 
             return 0;
