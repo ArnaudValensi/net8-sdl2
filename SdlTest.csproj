@@ -16,15 +16,23 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
 
-  <ItemGroup>
-    <None Remove="SDL2.dll" />
-    <Content Include="SDL2.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-  </ItemGroup>
+<!--  <ItemGroup>-->
+<!--    <None Remove="SDL2.dll" />-->
+<!--    <Content Include="SDL2.dll">-->
+<!--      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>-->
+<!--    </Content>-->
+<!--  </ItemGroup>-->
   
   <ItemGroup>
     <PackageReference Include="Microsoft.DotNet.ILCompiler.LLVM; runtime.win-x64.Microsoft.DotNet.ILCompiler.LLVM" Version="8.0.0-*" />
   </ItemGroup>
+  
+  <ItemGroup>
+    <None Remove="mylib.dll" />
+  </ItemGroup>
+
+  <PropertyGroup>
+    <EmccExtraArgs>-s USE_SDL=2 .\libs\mylib.c</EmccExtraArgs>
+  </PropertyGroup>
 
 </Project>
